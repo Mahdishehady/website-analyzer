@@ -10,7 +10,7 @@ def count_eachDoc():
     pipeline = [
         {
             "$group": {
-                "_id": "$postID",
+                "_id": "$_id",
                 "count": {"$sum": 1}
             }
         }
@@ -18,11 +18,12 @@ def count_eachDoc():
 
     # Execute the aggregation query
     result = collection.aggregate(pipeline)
-
+    get_dup = []
     # Print the aggregation result
     for entry in result:
-        print(entry)
-
+        if entry['count'] == 2:
+            get_dup.append(entry)
+    print(get_dup)
     # Close the connection
     client.close()
 
