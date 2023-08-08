@@ -17,12 +17,12 @@ values = list(dic_news.values())
 plt.bar(categories, values)
 
 # Add labels and title
-plt.xlabel('Categories')
-plt.ylabel('Values')
-plt.title('Dictionary Visualization')
+plt.xlabel('Days')
+plt.ylabel('News')
+plt.title('News/Days')
 
 # Rotate x-axis labels for better readability
-# plt.xticks(rotation=10)
+plt.xticks(rotation=50)
 
 # Display the chart
 plt.show()
