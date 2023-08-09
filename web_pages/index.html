@@ -1,42 +1,46 @@
+<!DOCTYPE html>
 <html>
 <head>
     <title>Highcharts Histogram</title>
     <script src="https://code.highcharts.com/highcharts.js"></script>
     <script src="https://code.highcharts.com/modules/accessibility.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">
 </head>
 <body>
-<div id="container"></div>
+   <div class="row">
+       <div id="container1" style="width: 50%"></div>
+       <div id="container2" style="width: 50%"></div>
+</div>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // Generate a random number between 1 and 30 for the URL parameter
+            const randomDays = Math.floor(Math.random() * (20 - 5 + 1)) + 5;
+            const apiUrl = `http://127.0.0.1:8000/getLastNews/${randomDays}`;
 
-<script>
-    document.addEventListener('DOMContentLoaded', function () {
-        let news = [];
-        const apiUrl = 'http://127.0.0.1:8000/getLastNews/20';
+            // Make a GET request to the API
+            fetch(apiUrl)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! Status: ${response.status}`);
+                    }
+                    return response.json(); // Parse the response as JSON
+                })
+                .then(data => {
+                    const news = [];
 
-// Make a GET request to the API
-        fetch(apiUrl)
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error(`HTTP error! Status: ${response.status}`);
-                }
-                return response.json(); // Parse the response as JSON
-            })
-            .then(data => {
-                const values = Object.values(data)
-                const keys = Object.keys(data)
+                    // Convert data object to array for Highcharts
+                    Object.entries(data).forEach(([key, value]) => {
+                        news.push([key, value]);
+                    });
 
-                for (const key in data) {
-                    const temp = [];
-                    temp.push(key);
-                    temp.push(data[key])
-                    news.push(temp)
-                }
-                console.log(news)
-                 Highcharts.chart('container', {
+                    console.log(news);
+                    //Create pie chart
+                    Highcharts.chart('container1', {
             chart: {
                 type: 'column'
             },
             title: {
-                text: 'Aljazeera largest News Last 10 days'
+                text: `Aljazeera largest News Last ${randomDays} days`
             },
             subtitle: {
                 text: ''
@@ -61,7 +65,7 @@
                 enabled: false
             },
             tooltip: {
-                pointFormat: 'News'
+               pointFormat: 'News: <b>{point.y}</b>'
             },
             series: [{
                 name: 'News',
@@ -89,16 +93,60 @@
             }]
         });
 
-
-
-            })
-            .catch(error => {
-                console.error('Fetch error:', error);
-            });
-
-
-
-    });
-</script>
+                    // Create Highcharts histogram
+                    Highcharts.chart('container2', {
+                        chart: {
+                            type: 'pie'
+                        },
+                        title: {
+                            text: `Aljazeera largest News Last ${randomDays} days`
+                        },
+                        xAxis: {
+                            type: 'category',
+                            labels: {
+                                autoRotation: [-45, -90],
+                                style: {
+                                    fontSize: '13px',
+                                    fontFamily: 'Verdana, sans-serif'
+                                }
+                            }
+                        },
+                        yAxis: {
+                            min: 0,
+                            title: {
+                                text: 'News Count'
+                            }
+                        },
+                        legend: {
+                            enabled: false
+                        },
+                        tooltip: {
+                            pointFormat: 'News: <b>{point.y}</b>'
+                        },
+                        series: [{
+                            name: 'News',
+                            colorByPoint: true,
+                            groupPadding: 0,
+                            data: news,
+                            dataLabels: {
+                                enabled: true,
+                                rotation: -90,
+                                color: '#FFFFFF',
+                                align: 'right',
+                                format: '{point.y}', // Display as integer
+                                y: 10,
+                                style: {
+                                    fontSize: '13px',
+                                    fontFamily: 'Verdana, sans-serif'
+                                }
+                            }
+                        }]
+                    });
+                })
+                .catch(error => {
+                    console.error('Fetch error:', error);
+                });
+        });
+    </script>
 </body>
 </html>

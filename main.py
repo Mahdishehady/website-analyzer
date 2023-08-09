@@ -29,3 +29,8 @@ def index(number: int):
 
     dic_news = noSQL.news_by_dates(last_10_days, current_datetime)
     return dic_news
+
+
+@app.get("/top1")
+def top1():
+    return noSQL.count_topics()

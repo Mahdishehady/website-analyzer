@@ -75,18 +75,18 @@ published_date = "2023-07-20"
 # count_documents_by_published_date(published_date)
 
 
-def get_keywords():
+def get_topics():
     client = MongoClient('mongodb://localhost:27017')
     db = client['news_db']
     collection = db['my_database']
 
     # Query the collection and retrieve the "keywords" field
-    keywords_list = collection.distinct('keywords')
+    topics_list = collection.distinct('topics')
 
-    return keywords_list
+    return topics_list
 
 
-print(get_keywords())
+# print(get_topics())
 
 
 def news_by_dates(get_start_date, get_end_date):
@@ -96,3 +96,29 @@ def news_by_dates(get_start_date, get_end_date):
         get_start_date = get_start_date + datetime.timedelta(days=1)
 
     return data
+
+
+def count_topics():
+    client = MongoClient('mongodb://localhost:27017')
+    db = client['news_db']
+    collection = db['my_database']
+    pipeline = [
+        {
+            "$group": {
+                "_id": "$topics",
+                "count": {"$sum": 1}
+            }
+        }
+    ]
+    result = collection.aggregate(pipeline)
+
+    topic_count_dict = {item["_id"]: item["count"] for item in result}
+
+    # Sort the dictionary by values
+    sorted_dict = dict(sorted(topic_count_dict.items(), key=lambda item: item[1]))
+
+    print(sorted_dict)
+    return sorted_dict
+
+
+count_topics()
