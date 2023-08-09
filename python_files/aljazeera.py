@@ -1,7 +1,7 @@
 import requests
 from bs4 import BeautifulSoup
-from post import Post
-import push_to_mongodb
+from python_files.post import Post
+from python_files import push_to_mongodb
 import datetime
 
 
@@ -60,6 +60,8 @@ class NewsScraper:
 
 
 news_scraper = NewsScraper()
-start_date = datetime.date(2023, 7, 20)
-end_date = datetime.date(2023, 7, 27)
-news_scraper.get_news_by_dates(start_date, end_date)
+
+current_datetime = datetime.datetime.now()
+
+last_10_days = current_datetime - datetime.timedelta(days=10)
+news_scraper.get_news_by_dates(last_10_days, current_datetime)

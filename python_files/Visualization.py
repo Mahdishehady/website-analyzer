@@ -1,13 +1,16 @@
-from datetime import datetime
+import datetime
 
 import matplotlib.pyplot as plt
-import noSQL
+from python_files import noSQL
 
-date1 = datetime(2023, 7, 20)
-date2 = datetime(2023, 7, 27)
-print(str(date1.date()))
+current_datetime = datetime.datetime.now()
 
-dic_news = noSQL.news_by_dates(date1, date2)
+last_10_days = current_datetime - datetime.timedelta(days=10)
+# date1 = datetime(2023, 7, 20)
+# date2 = datetime(2023, 7, 27)
+
+
+dic_news = noSQL.news_by_dates(last_10_days, current_datetime)
 
 # Extract keys and values from the dictionary
 categories = list(dic_news.keys())
@@ -19,7 +22,7 @@ plt.bar(categories, values)
 # Add labels and title
 plt.xlabel('Days')
 plt.ylabel('News')
-plt.title('News/Days')
+plt.title('Aljazeera')
 
 # Rotate x-axis labels for better readability
 plt.xticks(rotation=50)

@@ -1,5 +1,4 @@
 import requests
-import json
 from bs4 import BeautifulSoup
 import push_to_mongodb
 from post import Post
@@ -66,7 +65,8 @@ def get_news_by_dates(get_start_date, get_end_date):
         get_start_date = get_start_date + datetime.timedelta(days=1)
 
 
-date1 = datetime.date(2023, 7, 20)
-date2 = datetime.date(2023, 7, 27)
+current_datetime = datetime.datetime.now()
 
-get_news_by_dates(date1, date2)
+last_10_days = current_datetime - datetime.timedelta(days=10)
+
+get_news_by_dates(last_10_days, current_datetime)
