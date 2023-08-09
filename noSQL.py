@@ -65,7 +65,7 @@ def count_documents_by_published_date(date):
         doc_add += int(list_news[x]['count'])
     # Close the connection
     client.close()
-    print(doc_add)
+
     return doc_add
 
 
@@ -86,7 +86,7 @@ def get_keywords():
     return keywords_list
 
 
-get_keywords()
+print(get_keywords())
 
 
 def news_by_dates(get_start_date, get_end_date):

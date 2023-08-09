@@ -1,7 +1,7 @@
 import requests
 from bs4 import BeautifulSoup
-from python_files.post import Post
-from python_files import push_to_mongodb
+from post import Post
+import push_to_mongodb
 import datetime
 
 

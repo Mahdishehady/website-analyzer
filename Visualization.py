@@ -1,7 +1,7 @@
 import datetime
 
 import matplotlib.pyplot as plt
-from python_files import noSQL
+import noSQL
 
 current_datetime = datetime.datetime.now()
 
