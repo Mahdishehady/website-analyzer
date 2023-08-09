@@ -5,13 +5,6 @@ from starlette.middleware.cors import CORSMiddleware
 
 import noSQL
 
-current_datetime = datetime.datetime.now()
-
-last_10_days = current_datetime - datetime.timedelta(days=10)
-
-dic_news = noSQL.news_by_dates(last_10_days, current_datetime)
-
-
 app = FastAPI()
 
 app.add_middleware(
@@ -28,6 +21,11 @@ def welcome():
     return {"Hello"}
 
 
-@app.get("/getLastNews")
-def index():
+@app.get("/getLastNews/{number}")
+def index(number: int):
+    current_datetime = datetime.datetime.now()
+
+    last_10_days = current_datetime - datetime.timedelta(days=number)
+
+    dic_news = noSQL.news_by_dates(last_10_days, current_datetime)
     return dic_news
