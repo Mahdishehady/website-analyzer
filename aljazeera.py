@@ -1,5 +1,7 @@
 import requests
 from bs4 import BeautifulSoup
+
+import noSQL
 from post import Post
 import push_to_mongodb
 import datetime
@@ -44,8 +46,9 @@ class NewsScraper:
                 print(url)
                 meta_data = self.scrape_meta_data(url)
                 meta_data = Post(meta_data).to_dict()
-                print(meta_data)
-                all_meta_data.append(meta_data)
+                # check if a post found in mongodb or not, if not insert
+                if not noSQL.search_for_occurrence(meta_data['postID']):
+                    all_meta_data.append(meta_data)
 
             push_to_mongodb.push_data(all_meta_data)
             print("Meta data written to MongoDB.")

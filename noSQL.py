@@ -3,6 +3,7 @@ import datetime
 from pymongo import MongoClient
 
 
+# 1
 def count_eachDoc():
     client = MongoClient('mongodb://localhost:27017')
     db = client['news_db']
@@ -32,7 +33,7 @@ def count_eachDoc():
 
 # count_eachDoc()
 
-
+# 2
 def count_documents_by_published_date(date):
     client = MongoClient('mongodb://localhost:27017')
     db = client['news_db']
@@ -74,7 +75,7 @@ published_date = "2023-07-20"
 
 # count_documents_by_published_date(published_date)
 
-
+# 3
 def get_topics():
     client = MongoClient('mongodb://localhost:27017')
     db = client['news_db']
@@ -88,7 +89,7 @@ def get_topics():
 
 # print(get_topics())
 
-
+# 4
 def news_by_dates(get_start_date, get_end_date):
     data = {}
     while not str(get_start_date.date()) == str(get_end_date.date()):
@@ -98,6 +99,7 @@ def news_by_dates(get_start_date, get_end_date):
     return data
 
 
+# 5
 def count_topics():
     client = MongoClient('mongodb://localhost:27017')
     db = client['news_db']
@@ -122,3 +124,32 @@ def count_topics():
 
 
 count_topics()
+
+
+# 6
+def search_for_occurrence(id):
+    client = MongoClient('mongodb://localhost:27017')
+    db = client['news_db']
+    collection = db['my_database']
+    # Perform the query
+
+    count = collection.count_documents({"postID": "id"})
+    # Check if any documents were found
+    if count > 0:
+        print(" documents found.".count)
+        return True
+    else:
+        print("No documents found ,Insert")
+        return False
+
+
+# 7
+def get_total_articles():
+    client = MongoClient('mongodb://localhost:27017')
+    db = client['news_db']
+    collection = db['my_database']
+    dic = {}
+    total_count = collection.count_documents({})
+    dic['total'] = total_count
+
+    return dic

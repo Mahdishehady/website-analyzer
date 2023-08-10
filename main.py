@@ -34,3 +34,8 @@ def index(number: int):
 @app.get("/top1")
 def top1():
     return noSQL.count_topics()
+
+
+@app.get('/totalcount')
+def total():
+    return dict(noSQL.get_total_articles())
