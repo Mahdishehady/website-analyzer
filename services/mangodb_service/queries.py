@@ -123,7 +123,7 @@ def count_topics():
     return sorted_dict
 
 
-count_topics()
+# count_topics()
 
 
 # 6
@@ -153,3 +153,47 @@ def get_total_articles():
     dic['total'] = total_count
 
     return dic
+
+
+# 8
+def get_Keywords():
+    client = MongoClient('mongodb://localhost:27017')
+    db = client['news_db']
+    collection = db['my_database']
+
+    # Query the collection and retrieve the "keywords" field
+    keywords_list = collection.distinct('keywords')
+
+    print(keywords_list)
+
+
+def count_each_topic():
+    keywords = get_Keywords()
+    data_count = {}
+    client = MongoClient('mongodb://localhost:27017')
+    db = client['news_db']
+    collection = db['my_database']
+    for keyword in keywords:
+        # Aggregation pipeline
+        pipeline = [
+            {
+                '$unwind': "$keywords"
+            },
+            {
+                '$match': {
+                    'keywords': keyword
+                }
+            },
+            {
+                '$group': {
+                    '_id': None,
+                    'count': {'$sum': 1}
+                }
+            }]
+        # Execute the aggregation query
+        result = collection.aggregate(pipeline)
+        # data_count[str(keyword)]=
+        print(result)
+
+
+count_each_topic()

@@ -3,7 +3,7 @@ import datetime
 
 from starlette.middleware.cors import CORSMiddleware
 
-import noSQL
+from services.mangodb_service.queries import news_by_dates, count_topics, get_total_articles
 
 app = FastAPI()
 
@@ -27,15 +27,15 @@ def index(number: int):
 
     last_10_days = current_datetime - datetime.timedelta(days=number)
 
-    dic_news = noSQL.news_by_dates(last_10_days, current_datetime)
+    dic_news = news_by_dates(last_10_days, current_datetime)
     return dic_news
 
 
 @app.get("/top1")
 def top1():
-    return noSQL.count_topics()
+    return count_topics()
 
 
 @app.get('/totalcount')
 def total():
-    return dict(noSQL.get_total_articles())
+    return dict(get_total_articles())
