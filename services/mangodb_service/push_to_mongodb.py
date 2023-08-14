@@ -1,25 +1,8 @@
 import json
 from pymongo import MongoClient
 
-"""
-client = MongoClient('mongodb://localhost:27017')
-db = client['news_db']
-collection = db['my_database']
 
-with open('meta_data.json', 'r', encoding="utf8") as json_file:
-    data = json.load(json_file)
-
-# Check if data is a list of documents (multiple dictionaries)
-if isinstance(data, list):
-    collection.insert_many(data)
-else:
-    # If data is a single document (a single dictionary)
-    collection.insert_one(data)
-
-client.close()
-"""
-
-
+# push data to mongodb
 def push_data(data):
     client = MongoClient('mongodb://localhost:27017')
     db = client['news_db']
@@ -32,6 +15,7 @@ def push_data(data):
     client.close()
 
 
+# Select data from mongodb
 def select_data():
     client = MongoClient('mongodb://localhost:27017')
     db = client['news_db']
@@ -44,4 +28,3 @@ def select_data():
         print(document)
         print("--------------------------------------------")
     client.close()
-

@@ -1,11 +1,15 @@
 import requests
 from bs4 import BeautifulSoup
+
+from model.base_scrape import BaseScrape
 from post import Post
-import push_to_mongodb
+from services.mangodb_service import push_to_mongodb
 import datetime
 
+from services.mangodb_service.queries import search_for_occurrence
 
-class NewsScraper:
+
+class NewsScraper(BaseScrape):
     def __init__(self):
         pass
 
@@ -43,9 +47,11 @@ class NewsScraper:
             for url in urls:
                 print(url)
                 meta_data = self.scrape_meta_data(url)
-                meta_data = Post(meta_data).to_dict()
                 print(meta_data)
-                all_meta_data.append(meta_data)
+                meta_data = Post(meta_data).to_dict()
+                # check if a post found in mongodb or not, if not insert
+                if not search_for_occurrence(meta_data['postID']):
+                    all_meta_data.append(meta_data)
 
             push_to_mongodb.push_data(all_meta_data)
             print("Meta data written to MongoDB.")
@@ -62,6 +68,9 @@ class NewsScraper:
 news_scraper = NewsScraper()
 
 current_datetime = datetime.datetime.now()
+date1 = datetime.datetime(2023, 7, 27)
+date2 = datetime.datetime(2023, 7, 29)
 
 last_10_days = current_datetime - datetime.timedelta(days=10)
 news_scraper.get_news_by_dates(last_10_days, current_datetime)
+# news_scraper.get_news_by_dates(date1, date2)
