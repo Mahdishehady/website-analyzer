@@ -3,7 +3,7 @@ import datetime
 
 from starlette.middleware.cors import CORSMiddleware
 
-from services.mangodb_service.queries import news_by_dates, count_topics, get_total_articles
+from services.mangodb_service.queries import news_by_dates, count_topics, get_total_articles, count_each_topic
 
 app = FastAPI()
 
@@ -16,6 +16,7 @@ app.add_middleware(
 )
 
 
+# default route
 @app.get("/")
 def welcome():
     return {"Hello"}
@@ -39,3 +40,7 @@ def top1():
 @app.get('/totalcount')
 def total():
     return dict(get_total_articles())
+
+@app.get('/allkeywords')
+def allkeys():
+    return count_each_topic()

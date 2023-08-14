@@ -1,7 +1,8 @@
 import datetime
 
 import matplotlib.pyplot as plt
-import noSQL
+
+from services.mangodb_service.queries import news_by_dates
 
 current_datetime = datetime.datetime.now()
 
@@ -10,7 +11,7 @@ last_10_days = current_datetime - datetime.timedelta(days=10)
 # date2 = datetime(2023, 7, 27)
 
 
-dic_news = noSQL.news_by_dates(last_10_days, current_datetime)
+dic_news = news_by_dates(last_10_days, current_datetime)
 
 # Extract keys and values from the dictionary
 categories = list(dic_news.keys())
