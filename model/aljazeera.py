@@ -77,9 +77,9 @@ class NewsScraper(BaseScrape):
 news_scraper = NewsScraper()
 
 current_datetime = datetime.datetime.now()
-date1 = datetime.datetime(2023, 6, 1)
-date2 = datetime.datetime(2023, 7, 1)
+date1 = datetime.datetime(2023, 4, 1)
+date2 = datetime.datetime(2023, 5, 1)
 
 last_10_days = current_datetime - datetime.timedelta(days=10)
-# news_scraper.get_news_by_dates(last_10_days, current_datetime)
-news_scraper.get_news_by_dates(date1, date2)
+news_scraper.get_news_by_dates(last_10_days, current_datetime)
+# news_scraper.get_news_by_dates(date1, date2)
