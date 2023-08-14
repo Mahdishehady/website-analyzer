@@ -3,7 +3,8 @@ import datetime
 
 from starlette.middleware.cors import CORSMiddleware
 
-from services.mangodb_service.queries import news_by_dates, count_topics, get_total_articles, count_each_topic
+from services.mangodb_service.queries import news_by_dates, count_topics, get_total_articles, count_each_topic, \
+    get_Ranged_data
 
 app = FastAPI()
 
@@ -41,6 +42,12 @@ def top1():
 def total():
     return dict(get_total_articles())
 
+
 @app.get('/allkeywords')
 def allkeys():
     return count_each_topic()
+
+
+@app.get('/contentCount')
+def contentCount():
+    return get_Ranged_data()
