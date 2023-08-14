@@ -18,11 +18,20 @@ class NewsScraper(BaseScrape):
         return response.text
 
     def scrape_meta_data(self, url):
+        meta_data = {}
+        count_p = 0
         page_content = self.fetch_page_content(url)
         soup = BeautifulSoup(page_content, "lxml")
 
+        get_all_description = soup.find_all('p')
+
+        for p in get_all_description:
+            p_content = p.get_text()
+            count_p += len(p_content.split())
+
+        meta_data['wordCount'] = count_p
+
         meta_tags = soup.find_all('meta')
-        meta_data = {}
 
         for tag in meta_tags:
             meta_data[tag.get('name')] = tag.get('content')
@@ -68,9 +77,9 @@ class NewsScraper(BaseScrape):
 news_scraper = NewsScraper()
 
 current_datetime = datetime.datetime.now()
-date1 = datetime.datetime(2023, 7, 27)
-date2 = datetime.datetime(2023, 7, 29)
+date1 = datetime.datetime(2023, 6, 1)
+date2 = datetime.datetime(2023, 7, 1)
 
 last_10_days = current_datetime - datetime.timedelta(days=10)
-news_scraper.get_news_by_dates(last_10_days, current_datetime)
-# news_scraper.get_news_by_dates(date1, date2)
+# news_scraper.get_news_by_dates(last_10_days, current_datetime)
+news_scraper.get_news_by_dates(date1, date2)

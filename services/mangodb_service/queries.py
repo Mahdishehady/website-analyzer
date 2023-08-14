@@ -196,4 +196,32 @@ def count_each_topic():
             data_count[str(keyword)] = entry['count']
     return data_count
 
+
 # count_each_topic()
+
+# Get data and arrange them 0-100 ,100-200 ,200-400, >400
+def get_Ranged_data():
+    client = MongoClient('mongodb://localhost:27017')
+    db = client['news_db']
+    collection = db['my_database']
+    # cursor is a python dictionary
+    cursor = collection.find({})
+    a = 0
+    b = 0
+    c = 0
+    d = 0
+    temp = {}
+    for document in cursor:
+        if 0 < int(document['wordCount']) < 100 or None:
+            a = a + 1
+        elif 100 <= int(document['wordCount']) < 200:
+            b = b + 1
+        elif 200 <= int(document['wordCount']) < 400:
+            c = c + 1
+        else:
+            d = d + 1
+    temp['bet0and100'] = a
+    temp['bet100and200'] = b
+    temp['bet200and400'] = c
+    temp['bet400andmore'] = d
+    return temp

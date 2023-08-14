@@ -14,6 +14,7 @@ class Post:
         self.where = post.get('where', 'Unknown')
         self.displayAuthors = post.get('displayAuthors', False)
         self.topics = post.get('topics', 'Unknown')
+        self.wordCount = post.get('wordCount', None)
 
     def to_dict(self):
         return self.__dict__
