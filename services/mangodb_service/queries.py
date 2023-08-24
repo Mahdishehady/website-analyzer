@@ -2,6 +2,8 @@ import datetime
 
 from pymongo import MongoClient
 
+import re
+
 
 # 1 get count of news each day and check for duplication
 def count_eachDoc():
@@ -162,7 +164,7 @@ def get_Keywords():
     # Query the collection and retrieve the "keywords" field
     keywords_list = collection.distinct('keywords')
 
-    return keywords_list
+    return keywords_list[:10]
 
 
 # function that returns a dictionary of each keyword occurrence
@@ -225,3 +227,28 @@ def get_Ranged_data():
     temp['bet200and400'] = c
     temp['bet400andmore'] = d
     return temp
+
+
+def searchForSubstring(substring):
+    if substring == "":
+        return []
+    # Connect to MongoDB
+    client = MongoClient('mongodb://localhost:27017')
+    db = client['news_db']
+    collection = db['my_database']
+
+    # Create a regular expression pattern for the substring
+    pattern = re.compile(substring, re.IGNORECASE)  # Case-insensitive search
+
+    # Query MongoDB using the regular expression pattern
+    query = {"description": {"$regex": pattern}}
+    results = collection.find(query)
+    data = []
+
+    for index, document in enumerate(results):
+        data.append({'description': document['description'],
+                     'postID': document['postID'],
+                     'wordCount': document['wordCount']
+                     })
+
+    return data
