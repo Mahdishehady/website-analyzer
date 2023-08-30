@@ -1,15 +1,14 @@
+from model.base_scrape import BaseScrape
 import requests
 from bs4 import BeautifulSoup
-
-from model.base_scrape import BaseScrape
-from post import Post
-from services.mangodb_service import push_to_mongodb
 import datetime
 
+from model.postAlittihade import PostAlittihade
+from services.mangodb_service import push_to_mongodb
 from services.mangodb_service.queries import search_for_occurrence
 
 
-class NewsScraper(BaseScrape):
+class AlitthadNewsScraper(BaseScrape):
     def __init__(self):
         pass
 
@@ -34,12 +33,15 @@ class NewsScraper(BaseScrape):
         meta_tags = soup.find_all('meta')
 
         for tag in meta_tags:
-            meta_data[tag.get('name')] = tag.get('content')
+            if tag.get('name'):
+                meta_data[tag.get('name')] = tag.get('content')
+            if tag.get('property'):
+                meta_data[tag.get('property')] = tag.get('content')
 
         return meta_data
 
     def get_news(self, get_date):
-        sitemap_url = f"https://www.aljazeera.net/sitemap.xml?yyyy={get_date.year}&mm={get_date.month}&dd={get_date.day}"
+        sitemap_url = f"https://saadmedia365aznc.blob.core.windows.net/media/sitemap/main/sitemap-{get_date.year}-{get_date.month}.xml"
         response = requests.get(sitemap_url)
 
         if response.status_code == 200:
@@ -56,30 +58,27 @@ class NewsScraper(BaseScrape):
             for url in urls:
                 print(url)
                 meta_data = self.scrape_meta_data(url)
-                print(meta_data)
-                meta_data = Post(meta_data).to_dict()
-                # check if a post found in mongodb or not, if not insert
-                if not search_for_occurrence(meta_data['postID']):
-                    all_meta_data.append(meta_data)
 
-            push_to_mongodb.push_data(all_meta_data)
+                meta_data = PostAlittihade(meta_data).to_dict()
+                print(meta_data)
+                # check if a post found in mongodb or not, if not insert
+                # if not search_for_occurrence(meta_data['postID']):
+                all_meta_data.append(meta_data)
+
+            # push_to_mongodb.push_data(all_meta_data)
             print("Meta data written to MongoDB.")
 
         else:
             print(f"Failed to fetch sitemap from {sitemap_url}")
 
-    def get_news_by_dates(self, get_start_date, get_end_date):
-        while not get_start_date == get_end_date:
-            self.get_news(get_start_date)
-            get_start_date = get_start_date + datetime.timedelta(days=1)
+    def get_news_by_dates(self, date):
+
+        self.get_news(date)
 
 
-news_scraper = NewsScraper()
+news_scraper = AlitthadNewsScraper()
 
-current_datetime = datetime.datetime.now()
-date1 = datetime.datetime(2023, 8, 15)
-date2 = datetime.datetime(2023, 5, 1)
+date = datetime.datetime(2023, 8, 15)
 
-last_10_days = current_datetime - datetime.timedelta(days=10)
-news_scraper.get_news_by_dates(date1, current_datetime)
+news_scraper.get_news_by_dates(date)
 # news_scraper.get_news_by_dates(date1, date2)
