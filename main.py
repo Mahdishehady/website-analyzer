@@ -1,6 +1,9 @@
 from fastapi import FastAPI
 import datetime
+from fastapi import FastAPI, HTTPException
 
+from bson.objectid import ObjectId
+from pymongo import MongoClient
 from starlette.middleware.cors import CORSMiddleware
 
 from services.mangodb_service.queries import news_by_dates, count_topics, get_total_articles, count_each_topic, \
@@ -83,3 +86,17 @@ def contentCount():
 @app.get('/articles/{keyword}')
 def getArticles(keyword: str):
     return searchForSubstring(keyword)
+
+
+@app.get("/delete-website/{url}")
+def delete_website(url: str):
+    client = MongoClient("mongodb://localhost:27017/")
+    db = client["website-analyser"]
+    collection = db["websites"]
+
+    result = collection.delete_one({"url": url})
+    if result.deleted_count == 0:
+        print("item not  deleted")
+        return {"message": "wesbite not found"}
+    print("item deleted")
+    return {"message": "Website deleted successfully"}

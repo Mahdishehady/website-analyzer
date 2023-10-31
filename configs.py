@@ -1,0 +1,4 @@
+MONGODB_CONNECTION = 'mongodb://localhost:27017'
+MONGODB_DATABASE = 'news_db'
+MONGODB_POSTS_COLLECTION = 'my_database'
+MONGODB_WEBSITES_COLLECTION = 'websites'

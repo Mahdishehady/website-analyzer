@@ -4,13 +4,12 @@ from pymongo import MongoClient
 
 import re
 
-
 # 1 get count of news each day and check for duplication
-def count_eachDoc():
-    client = MongoClient('mongodb://localhost:27017')
-    db = client['news_db']
-    collection = db['my_database']
+from services.mangodb_service.mongodb_connect import MongoHelper
 
+
+def count_eachDoc():
+    collection = MongoHelper.get_mongodb_posts_collection()
     # Aggregation pipeline
     pipeline = [
         {
@@ -29,17 +28,13 @@ def count_eachDoc():
         # if entry['count'] == 2:
         # get_dup.append(entry)
         print(entry)
-    # Close the connection
-    client.close()
 
 
 # count_eachDoc()
 
 # 2 function that takes a day and return the count news in that day
 def count_documents_by_published_date(date):
-    client = MongoClient('mongodb://localhost:27017')
-    db = client['news_db']
-    collection = db['my_database']
+    collection = MongoHelper.get_mongodb_posts_collection()
 
     # Aggregation pipeline
     pipeline = [
@@ -66,8 +61,6 @@ def count_documents_by_published_date(date):
         list_news.append(entry)
     for x in range(0, len(list_news)):
         doc_add += int(list_news[x]['count'])
-    # Close the connection
-    client.close()
 
     return doc_add
 
@@ -77,9 +70,7 @@ published_date = "2023-07-20"
 
 # 3 get all topics about the news
 def get_topics():
-    client = MongoClient('mongodb://localhost:27017')
-    db = client['news_db']
-    collection = db['my_database']
+    collection = MongoHelper.get_mongodb_posts_collection()
 
     # Query the collection and retrieve the "keywords" field
     topics_list = collection.distinct('topics')
@@ -101,9 +92,8 @@ def news_by_dates(get_start_date, get_end_date):
 
 # 5
 def count_topics():
-    client = MongoClient('mongodb://localhost:27017')
-    db = client['news_db']
-    collection = db['my_database']
+    collection = MongoHelper.get_mongodb_posts_collection()
+
     pipeline = [
         {
             "$group": {
@@ -128,9 +118,8 @@ def count_topics():
 
 # 6 search if news to insert is in mongodb or not
 def search_for_occurrence(id):
-    client = MongoClient('mongodb://localhost:27017')
-    db = client['news_db']
-    collection = db['my_database']
+    collection = MongoHelper.get_mongodb_posts_collection()
+
     # Perform the query
 
     count = collection.count_documents({"postID": "id"})
@@ -145,9 +134,8 @@ def search_for_occurrence(id):
 
 # 7 get the total of articles in the db
 def get_total_articles():
-    client = MongoClient('mongodb://localhost:27017')
-    db = client['news_db']
-    collection = db['my_database']
+    collection = MongoHelper.get_mongodb_posts_collection()
+
     dic = {}
     total_count = collection.count_documents({})
     dic['total'] = total_count
@@ -157,9 +145,7 @@ def get_total_articles():
 
 # 8 get all the keywords from mongodb
 def get_Keywords():
-    client = MongoClient('mongodb://localhost:27017')
-    db = client['news_db']
-    collection = db['my_database']
+    collection = MongoHelper.get_mongodb_posts_collection()
 
     # Query the collection and retrieve the "keywords" field
     keywords_list = collection.distinct('keywords')
@@ -171,9 +157,8 @@ def get_Keywords():
 def count_each_topic():
     keywords = get_Keywords()
     data_count = {}
-    client = MongoClient('mongodb://localhost:27017')
-    db = client['news_db']
-    collection = db['my_database']
+    collection = MongoHelper.get_mongodb_posts_collection()
+
     for keyword in keywords:
         # Aggregation pipeline
         pipeline = [
@@ -203,9 +188,8 @@ def count_each_topic():
 
 # Get data and arrange them 0-100 ,100-200 ,200-400, >400
 def get_Ranged_data():
-    client = MongoClient('mongodb://localhost:27017')
-    db = client['news_db']
-    collection = db['my_database']
+    collection = MongoHelper.get_mongodb_posts_collection()
+
     # cursor is a python dictionary
     cursor = collection.find({})
     a = 0
@@ -233,9 +217,7 @@ def searchForSubstring(substring):
     if substring == "":
         return []
     # Connect to MongoDB
-    client = MongoClient('mongodb://localhost:27017')
-    db = client['news_db']
-    collection = db['my_database']
+    collection = MongoHelper.get_mongodb_posts_collection()
 
     # Create a regular expression pattern for the substring
     pattern = re.compile(substring, re.IGNORECASE)  # Case-insensitive search
